@@ -102,3 +102,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+.idea/*
+coding_problems/.idea
+/coding_problems/.idea/
