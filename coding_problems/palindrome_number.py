@@ -1,4 +1,5 @@
 import unittest
+
 """
 Determine whether an integer is a palindrome. An integer is a palindrome when it reads the same backward as forward.
 
@@ -22,6 +23,22 @@ Explanation: Reads 01 from right to left. Therefore it is not a palindrome.
 
 
 class Solution:
+    # def isPalindrome0(self, x):
+    #     tmp_x = x
+    #     digits = 0
+    #     while tmp_x:
+    #         digits += 1
+    #         tmp_x = int(tmp_x / 10)
+    #     digits -= 1
+    #     while x:
+    #         left = int(x / 10 ** digits)
+    #         right = x % 10
+    #         if left != right:
+    #             return False
+    #         x /= 10
+    #         x %= 10
+    #         digits -= 1
+    #     return True
 
     def isPalindrome0(self, x):
         """
