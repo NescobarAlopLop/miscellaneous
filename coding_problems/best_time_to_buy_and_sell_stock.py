@@ -27,7 +27,7 @@ from unittest import TestCase
 
 
 class Solution:
-    def maxProfit(self, prices):
+    def max_profit(self, prices):
         """
         :type prices: List[int]
         :rtype: int
@@ -45,27 +45,24 @@ class TestSolution(TestCase):
 
     def test_1(self):
         nums = [2, 1, 2]
-        res = self.sol.maxProfit(nums)
+        res = self.sol.max_profit(nums)
         print("result: {}".format(res))
         self.assertEqual(1, res)
 
     def test_arrays1(self):
-        sol = Solution()
         nums = [7, 1, 5, 3, 6, 4]
-        res = sol.maxProfit(nums)
+        res = self.sol.max_profit(nums)
         print("result: {}".format(res))
         self.assertEqual(7, res)
 
     def test_arrays2(self):
-        sol = Solution()
         nums = [1, 2, 3, 4, 5]
-        res = sol.maxProfit(nums)
+        res = self.sol.max_profit(nums)
         print("result: {}".format(res))
         self.assertEqual(4, res)
 
     def test_arrays3(self):
-        sol = Solution()
         nums = [7, 6, 4, 3, 1]
-        res = sol.maxProfit(nums)
+        res = self.sol.max_profit(nums)
         print("result: {}".format(res))
         self.assertEqual(0, res)
