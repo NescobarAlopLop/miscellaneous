@@ -194,5 +194,6 @@ class TestSolution(unittest.TestCase):
         print("result: {}".format(res))
         self.assertFalse(res)
 
+
 if __name__ == '__main__':
     unittest.main()
