@@ -26,7 +26,7 @@ for (int i = 0; i < len; i++) {
 }
 """
 
-from unittest import TestCase
+import unittest
 
 
 class Solution:
@@ -46,7 +46,7 @@ class Solution:
         return rv + 1
 
 
-class TestSolution(TestCase):
+class TestSolution(unittest.TestCase):
 
     def test_arrays1(self):
         sol = Solution()
@@ -75,3 +75,7 @@ class TestSolution(TestCase):
         res = sol.removeDuplicates(nums)
         print("result: {}".format(nums[:res]))
         self.assertEqual(3, res)
+
+
+if __name__ == '__main__':
+    unittest.main()

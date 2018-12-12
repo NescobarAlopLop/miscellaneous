@@ -21,9 +21,8 @@ class Solution:
             res[target - val] = idx
 
         for idx, val in enumerate(nums):
-            if val in res:
-                if idx != res[val]:
-                    return [idx, res[val]]
+            if val in res and idx != res[val]:
+                return [idx, res[val]]
 
 
 class TestSolution(unittest.TestCase):

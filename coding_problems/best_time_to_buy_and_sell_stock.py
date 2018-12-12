@@ -23,7 +23,7 @@ Input: [7,6,4,3,1]
 Output: 0
 Explanation: In this case, no transaction is done, i.e. max profit = 0.
 """
-from unittest import TestCase
+import unittest
 
 
 class Solution:
@@ -40,7 +40,7 @@ class Solution:
         return max(wait, buy)
 
 
-class TestSolution(TestCase):
+class TestSolution(unittest.TestCase):
     sol = Solution()
 
     def test_1(self):
@@ -66,3 +66,7 @@ class TestSolution(TestCase):
         res = self.sol.max_profit(nums)
         print("result: {}".format(res))
         self.assertEqual(0, res)
+
+
+if __name__ == '__main__':
+    unittest.main()

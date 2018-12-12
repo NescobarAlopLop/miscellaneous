@@ -15,7 +15,7 @@ Example 3:
 Input: [1,1,1,3,3,4,3,2,4,2]
 Output: true
 """
-from unittest import TestCase
+import unittest
 
 
 class Solution:
@@ -33,7 +33,7 @@ class Solution:
         return False
 
 
-class TestSolution(TestCase):
+class TestSolution(unittest.TestCase):
     sol = Solution()
 
     def test_0(self):
@@ -53,3 +53,7 @@ class TestSolution(TestCase):
         res = self.sol.containsDuplicate(nums)
         print("result: {}".format(res))
         self.assertTrue(res)
+
+
+if __name__ == '__main__':
+    unittest.main()

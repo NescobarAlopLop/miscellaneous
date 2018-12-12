@@ -40,6 +40,7 @@ class Solution:
             else:
                 n += 1
 
+
 class TestSolution(TestCase):
     sol = Solution()
 
