@@ -8,6 +8,7 @@ return [0, 1].
 """
 import unittest
 
+
 class Solution:
     def twoSum(self, nums, target):
         """
