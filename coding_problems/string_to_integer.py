@@ -1,4 +1,3 @@
-import unittest
 """
 8. String to Integer (atoi)
 Medium
@@ -45,6 +44,7 @@ Output: -2147483648
 Explanation: The number "-91283472332" is out of the range of a 32-bit signed integer.
              Therefore INT_MIN (-231) is returned.
 """
+import unittest
 
 
 class Solution:
@@ -54,18 +54,27 @@ class Solution:
         :rtype: int
         """
         sign = 1
-        in_str = in_str.strip(" ")
-        if len(in_str) == 0:
-            return 0
-        if '-' in in_str and '+' in in_str:
-            return 0
-        if in_str[0] == '-':
-            sign = -1
-            in_str = in_str.strip("-")
-        if len(in_str) > 0:
-            if in_str[0] == '+':
-                sign = 1
-                in_str = in_str.strip("+")
+        in_str = in_str.strip(' ')
+        for idx, val in enumerate(in_str):
+            if idx > 0:
+                if '0' <= in_str[idx - 1] <= '9' and (val == '-' or val == '+'):
+                    in_str = in_str[:idx]
+                    break
+                if (in_str[idx - 1] == '+' and val == '-') or \
+                        (in_str[idx - 1] == '-' and val == '+') or \
+                        (in_str[idx - 1] == '-' and val == '-') or \
+                        (in_str[idx - 1] == '+' and val == '+'):
+                    return 0
+            if '0' <= val <= '9':
+                if idx > 0:
+                    if in_str[idx - 1] == '-':
+                        sign = -1
+                        in_str = in_str[idx:]
+                        break
+                    if in_str[idx - 1] == '+':
+                        in_str = in_str[idx:]
+                        break
+
         if len(in_str) > 0 and ord('0') <= ord(in_str[0]) <= ord('9'):
             rv = 0
             for s in in_str:
@@ -89,6 +98,7 @@ class TestSolution(unittest.TestCase):
 
     def test_positive(self):
         self.assertEqual(42, self.solution.myAtoi('42'))
+        self.assertEqual(self.myAtoi("123-"), 123)
 
     def test_negative(self):
         self.assertEqual(self.myAtoi("-42"), -42)
@@ -105,15 +115,24 @@ class TestSolution(unittest.TestCase):
     def test_empty(self):
         self.assertEqual(self.myAtoi(""), 0)
 
-    def test_sign(self):
+    def test_negatives(self):
         self.assertEqual(self.myAtoi("-"), 0)
         self.assertEqual(self.myAtoi("--"), 0)
 
     def test_two_signs(self):
         self.assertEqual(self.myAtoi("+-2"), 0)
+        self.assertEqual(self.myAtoi("-13+8"), -13)
+        self.assertEqual(self.myAtoi("++8"), 0)
+        self.assertEqual(self.myAtoi("--8"), 0)
 
     def test_explicit_positive(self):
         self.assertEqual(self.myAtoi("+1"), 1)
+
+    def test_spaces(self):
+        self.assertEqual(self.myAtoi("  0000000000012345678"), 12345678)
+
+    def test_expression(self):
+        self.assertEqual(self.myAtoi("0-1"), 0)
 
 
 if __name__ == '__main__':
