@@ -56,23 +56,23 @@ class Solution:
         :rtype: bool
         """
         return \
-            self.check_rows(board) and \
-            self.check_cols(board) and \
-            self.check_cubes(board)
+            self.validate_rows(board) and \
+            self.validate_cols(board) and \
+            self.validate_quadrants(board)
 
-    def check_rows(self, board):
+    def validate_rows(self, board):
         for row in board:
             if not self.is_row_valid(row):
                 return False
         return True
 
-    def check_cols(self, board):
+    def validate_cols(self, board):
         for col in range(9):
             if not self.is_col_valid(board, col):
                 return False
         return True
 
-    def check_cubes(self, board):
+    def validate_quadrants(self, board):
         for i in range(0, 9, 3):
             for j in range(0, 9, 3):
                 if not self.is_quad_valid(board, i, j):
