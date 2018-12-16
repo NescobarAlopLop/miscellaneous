@@ -23,35 +23,59 @@ class Solution:
         :type strs: List[str]
         :rtype: str
         """
-        check_chars = []
+        if not strs:
+            return ""
+        if len(strs) == 1:
+            return strs[0]
+        min_word_len = min(len(x) for x in strs)
         res = 0
-        l = min(len(x) for x in strs)
-        for i in range(l):
-            for s in strs:
-                check_chars.append(s[i])
-            for c in range(len(check_chars)-1):
-                if check_chars[c] != check_chars[-1]:
-                    return strs[0][:i + 1]
-                res += 1
+        for i in range(min_word_len):
+            for s in strs[:-1]:
+                if s[i] != strs[-1][i]:
+                    if i == min_word_len:
+                        i += 1
+                    return strs[0][:i]
+            res += 1
         return strs[0][:res]
+
 
 class TestSolution(unittest.TestCase):
     sol = Solution()
 
     def test_0(self):
-        res = self.sol.longestCommonPrefix(["flower","flow","flight"])
+        res = self.sol.longestCommonPrefix(["flower", "flow", "flight"])
         print("result: {}".format(res))
-        self.assertEqual(res, 'fl')
+        self.assertEqual('fl', res)
 
     def test_1(self):
-        res = self.sol.longestCommonPrefix(["dog","racecar","car"])
+        res = self.sol.longestCommonPrefix(["dog", "racecar", "car"])
         print("result: {}".format(res))
-        self.assertEqual(res, '')
+        self.assertEqual('', res)
 
     def test_2(self):
-        res = self.sol.longestCommonPrefix(["dog","dog","dog"])
+        res = self.sol.longestCommonPrefix(["dog", "dog", "dog"])
         print("result: {}".format(res))
-        self.assertEqual(res, '')
+        self.assertEqual('dog', res)
+
+    def test_3(self):
+        res = self.sol.longestCommonPrefix([])
+        print("result: {}".format(res))
+        self.assertEqual('', res)
+
+    def test_4(self):
+        res = self.sol.longestCommonPrefix(["aa", "a"])
+        print("result: {}".format(res))
+        self.assertEqual('a', res)
+
+    def test_5(self):
+        res = self.sol.longestCommonPrefix(["a"])
+        print("result: {}".format(res))
+        self.assertEqual('a', res)
+
+    def test_6(self):
+        res = self.sol.longestCommonPrefix(["c","c"])
+        print("result: {}".format(res))
+        self.assertEqual('c', res)
 
 
 if __name__ == '__main__':
