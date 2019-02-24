@@ -1,0 +1,19 @@
+{
+    "manifest_version": 2,
+    "name": "CleanMoodle",
+    "version": "1.0",
+    "description": "removes courses that are not in use in mw8.haifa.ac.il",
+    "icons": {
+        "48": "icons/simp_y3N_icon.ico"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*.haifa.ac.il/*"
+            ],
+            "js": [
+                "clean_moodle.js"
+            ]
+        }
+    ]
+}
