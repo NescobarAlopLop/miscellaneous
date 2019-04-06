@@ -13,7 +13,6 @@ Example 2:
 Input: "cbbd"
 Output: "bb"
 """
-import numpy as np
 import unittest
 
 
@@ -67,3 +66,7 @@ class TestMe(unittest.TestCase):
     def test_empty(self):
         res = self.sol.longestPalindrome('')
         self.assertEqual('', res)
+
+
+if __name__ == '__main__':
+    unittest.main()
