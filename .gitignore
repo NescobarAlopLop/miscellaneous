@@ -105,16 +105,8 @@ venv.bak/
 
 
 # my
-go_docker_talkcellaneous/go_docker_talk/rootfs
-go_docker_talkcellaneous/go_docker_talk/rootfs/*
-mini_programs/run_java_tests/test_files
-mini_programs/run_java_tests/test_files/*
-mini_programs/run_java_tests/test_files/e6bac9ea5c98e3ed08552897527869d0a460de8d57b74b878dac5e3da1d4d035/
-mini_programs/run_java_tests/test_files/e6bac9ea5c98e3ed08552897527869d0a460de8d57b74b878dac5e3da1d4d035/*
 .vscode
 
 .idea/*
-coding_problems/.idea
-/coding_problems/.idea/
-/coding_problems/.cache/
-/coding_problems/.pytest_cache/
+/go_docker_talk/rootfs/
+/mini_programs/run_java_test/test_files/
