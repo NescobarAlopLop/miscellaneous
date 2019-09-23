@@ -6,4 +6,7 @@ Here we have 2 scripts one for running Docker like environment with GO and anoth
 
 To download desired environment use `download-frozen-image-v2.sh`.
 
-To run it edit the rootfs path in `container.go` and run with `go run container.go /bin/bash`. You can change the arguments according to your liking.
+To run it edit the rootfs path in `container.go` and run with `go run container.go /bin/bash`.
+You can change the arguments according to your liking.
+
+Oh, it has to be ran as root (sudo) because this scripts edits system env variables.
