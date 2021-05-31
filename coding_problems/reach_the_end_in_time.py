@@ -85,6 +85,36 @@ def reachTheEndBFS(
     return 'No'
 
 
+def reachTheEndDFS(
+    grid,
+    max_time,
+    finish_x,
+    finish_y,
+):
+    root = (0, 0)
+    discovered = {root}
+    s = [(root, 0)]
+
+    while s:
+        v, time_took = s.pop()
+
+        if time_took > max_time:
+            continue
+
+        if v == (finish_x - 1, finish_y - 1):
+            return 'Yes'
+
+        for next_step in next_steps(grid=grid, location=v):
+            if grid[next_step[1]][next_step[0]] == '.':
+                if next_step not in discovered:
+                    discovered.add(next_step)
+                    s.append((next_step, time_took + 1))
+            else:
+                discovered.add(next_step)
+
+    return 'No'
+
+
 if __name__ == '__main__':
     grid = [
         '.#.',
@@ -138,6 +168,15 @@ if __name__ == '__main__':
 
     print(
         reachTheEndBFS(
+            grid=grid,
+            max_time=steps,
+            finish_x=len(grid[0]),
+            finish_y=len(grid),
+        )
+    )
+
+    print(
+        reachTheEndDFS(
             grid=grid,
             max_time=steps,
             finish_x=len(grid[0]),
