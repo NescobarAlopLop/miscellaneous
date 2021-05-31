@@ -56,11 +56,52 @@ def next_steps(
     return
 
 
+def reachTheEndBFS(
+    grid,
+    max_time,
+    finish_x,
+    finish_y,
+):
+    root = (0, 0)
+    discovered = {root}
+    q = [(root, 0)]
+
+    while q:
+        v, time_took = q.pop(0)
+        if time_took > max_time:
+            continue
+
+        if v == (finish_x - 1, finish_y - 1):
+            return 'Yes'
+
+        for next_step in next_steps(grid=grid, location=v):
+            if grid[next_step[1]][next_step[0]] == '.':
+                if next_step not in discovered:
+                    discovered.add(next_step)
+                    q.append((next_step, time_took + 1))
+            else:
+                discovered.add(next_step)
+
+    return 'No'
+
+
 if __name__ == '__main__':
     grid = [
         '.#.',
         '.#.',
         '...'
+    ]
+    grid = [
+        '..#.......',
+        '#.........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '.........#',
+        '.....##...',
+        '........#.',
     ]
 
     steps = len(grid) * 2 - 2
@@ -68,5 +109,38 @@ if __name__ == '__main__':
         reachTheEnd(
             grid=grid,
             maxTime=steps,
+        )
+    )
+
+    print(
+        reachTheEndBFS(
+            grid=grid,
+            max_time=steps,
+            finish_x=len(grid[0]),
+            finish_y=len(grid),
+        )
+    )
+
+    side = 499
+    grid = [
+        [
+            '.'
+            for i in range(side)
+        ] for j in range(side)
+    ]
+    steps = side * 2 - 2
+    print(
+        reachTheEnd(
+            grid=grid,
+            maxTime=steps,
+        )
+    )
+
+    print(
+        reachTheEndBFS(
+            grid=grid,
+            max_time=steps,
+            finish_x=len(grid[0]),
+            finish_y=len(grid),
         )
     )
