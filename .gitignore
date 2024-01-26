@@ -1,3 +1,7 @@
+# ignore downloaded images
+get_google_playground/**/*.png
+get_google_playground/**/*.svg
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
