@@ -6,13 +6,27 @@ import cairosvg
 import requests
 from PIL import Image
 
-ImageData = namedtuple('ImageData', ['image', 'row', 'col'])
+ImageData = namedtuple(
+    typename="ImageData",
+    field_names=["image", "row", "col"],
+)
 
 
-def download_image(base_url, row, col, download_dir):
-    file_path = create_svg_file_path(download_dir, row, col)
+def download_image(
+    base_url,
+    row,
+    col,
+    download_dir,
+):
+    file_path = create_svg_file_path(
+        download_dir,
+        row,
+        col,
+    )
 
-    if not os.path.exists(file_path):
+    if not os.path.exists(
+        file_path,
+    ):
         url = f"{base_url}/{row:02d}_{col:02d}.svg"
         print(f"Downloading {url}")
         response = requests.get(url)
@@ -23,27 +37,50 @@ def download_image(base_url, row, col, download_dir):
             print(f"Failed to download {url}")
 
 
-def download_images(base_url, rows, columns, download_dir):
-    if not os.path.exists(download_dir):
+def download_images(
+    base_url,
+    rows,
+    columns,
+    download_dir,
+):
+    if not os.path.exists(
+        download_dir,
+    ):
         os.makedirs(download_dir)
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         for row in range(rows):
             for col in range(columns):
-                executor.submit(download_image, base_url, row, col, download_dir)
+                executor.submit(
+                    download_image,
+                    base_url,
+                    row,
+                    col,
+                    download_dir,
+                )
 
 
-def stitch_images(download_dir, rows, columns, output_path):
+def stitch_images(
+    download_dir,
+    rows,
+    columns,
+    output_path,
+):
     images_data = svg_to_png(columns, download_dir, rows)
 
-    images_data.sort(key=lambda image_data: (image_data.row, image_data.col))
+    images_data.sort(
+        key=lambda image_data: (image_data.row, image_data.col),
+    )
 
     image_width = max(image.width for image, _, _ in images_data)
     image_height = max(image.height for image, _, _ in images_data)
     final_width = image_width * columns
     final_height = image_height * rows
 
-    final_image = Image.new("RGB", (final_width, final_height))
+    final_image = Image.new(
+        "RGB",
+        (final_width, final_height),
+    )
     for image, row, col in images_data:
         x = col * image_width
         y = row * image_height
@@ -52,36 +89,68 @@ def stitch_images(download_dir, rows, columns, output_path):
     final_image.save(output_path)
 
 
-def svg_to_png(columns, download_dir, rows) -> list[ImageData]:
+def svg_to_png(
+    columns,
+    download_dir,
+    rows,
+) -> list[ImageData]:
     images: list[ImageData] = []
 
     for row in range(rows):
         for col in range(columns):
             print(f"Converting {row:02d}_{col:02d}.svg to PNG")
             try:
-                image = convert_svg_to_png(create_svg_file_path(download_dir, row, col))
+                image = convert_svg_to_png(
+                    create_svg_file_path(
+                        download_dir,
+                        row,
+                        col,
+                    ),
+                )
             except Exception as exc:
-                print(f'Generated an exception: {exc}')
+                print(f"Generated an exception: {exc}")
             else:
-                images.append(ImageData(image, row, col))
+                images.append(
+                    ImageData(image, row, col),
+                )
 
     return images
 
 
-def create_future_to_image_dict(executor, rows, columns, download_dir):
+def create_future_to_image_dict(
+    executor,
+    rows,
+    columns,
+    download_dir,
+):
     future_to_image = {
-        executor.submit(convert_svg_to_png, create_svg_file_path(download_dir, row, col)): (row, col)
-        for row in range(rows) for col in range(columns)
+        executor.submit(
+            convert_svg_to_png,
+            create_svg_file_path(
+                download_dir,
+                row,
+                col,
+            ),
+        ): (row, col)
+        for row in range(rows)
+        for col in range(columns)
     }
 
     return future_to_image
 
 
-def convert_svg_to_png(file_path):
+def convert_svg_to_png(
+    file_path,
+):
     try:
-        if os.path.exists(file_path):
-            png_file_path = file_path.replace('.svg', '.png')
-            cairosvg.svg2png(url=file_path, write_to=png_file_path)
+        if os.path.exists(
+            file_path,
+        ):
+            png_file_path = file_path.replace(".svg", ".png")
+            cairosvg.svg2png(
+                url=file_path,
+                write_to=png_file_path,
+            )
             image = Image.open(png_file_path)
 
             return image
@@ -91,7 +160,11 @@ def convert_svg_to_png(file_path):
         print(f"An error occurred while converting {file_path} to PNG: {e}")
 
 
-def create_svg_file_path(download_dir, row, col):
+def create_svg_file_path(
+    download_dir,
+    row,
+    col,
+):
     return os.path.join(download_dir, f"{row:02d}_{col:02d}.svg")
 
 
@@ -102,8 +175,21 @@ def main():
     download_dir = "downloaded_images"
     output_path = "output_image.png"
 
-    download_images(url, rows, columns, download_dir)
-    stitch_images(download_dir, rows, columns, output_path)
+    print(f"Downloading images from {url} to {download_dir}")
+    download_images(
+        url,
+        rows,
+        columns,
+        download_dir,
+    )
+
+    print(f"Stitching images into {output_path}")
+    stitch_images(
+        download_dir,
+        rows,
+        columns,
+        output_path,
+    )
 
 
 if __name__ == "__main__":

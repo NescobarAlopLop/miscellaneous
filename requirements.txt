@@ -2,3 +2,4 @@ cairocffi
 pillow
 pytest
 requests
+black
