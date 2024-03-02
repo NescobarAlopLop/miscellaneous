@@ -1,12 +1,15 @@
 import concurrent.futures
 import os
 import threading
+from collections import namedtuple
 
 import cairosvg
 import requests
 from PIL import Image
 
 lock = threading.Lock()
+
+ImageData = namedtuple('ImageData', ['image', 'row', 'col'])
 
 
 def download_images(base_url, rows, columns, download_dir):
@@ -29,17 +32,17 @@ def download_images(base_url, rows, columns, download_dir):
 
 
 def stitch_images(download_dir, rows, columns, output_path):
-    images = svg_to_png(columns, download_dir, rows)
+    images_data = svg_to_png(columns, download_dir, rows)
 
-    images.sort(key=lambda x: (x[1], x[2]))
+    images_data.sort(key=lambda image_data: (image_data.row, image_data.col))
 
-    image_width = max(image.width for image, _, _ in images)
-    image_height = max(image.height for image, _, _ in images)
+    image_width = max(image.width for image, _, _ in images_data)
+    image_height = max(image.height for image, _, _ in images_data)
     final_width = image_width * columns
     final_height = image_height * rows
 
     final_image = Image.new("RGB", (final_width, final_height))
-    for image, row, col in images:
+    for image, row, col in images_data:
         x = col * image_width
         y = row * image_height
         final_image.paste(image, (x, y))
@@ -47,8 +50,9 @@ def stitch_images(download_dir, rows, columns, output_path):
     final_image.save(output_path)
 
 
-def svg_to_png(columns, download_dir, rows):
-    images = []
+def svg_to_png(columns, download_dir, rows) -> list[ImageData]:
+    images: list[ImageData] = []
+
     with concurrent.futures.ThreadPoolExecutor() as executor:
         future_to_image = create_future_to_image_dict(executor, rows, columns, download_dir)
         for future in concurrent.futures.as_completed(future_to_image):
@@ -58,7 +62,7 @@ def svg_to_png(columns, download_dir, rows):
             except Exception as exc:
                 print(f'Generated an exception: {exc}')
             else:
-                images.append((image, row, col))
+                images.append(ImageData(image, row, col))
 
     return images
 
