@@ -1,3 +1,4 @@
+import argparse
 import concurrent.futures
 import os
 from collections import namedtuple
@@ -191,26 +192,50 @@ def create_svg_file_path(
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Download and stitch images.",
+        epilog="Example command: python stitch_images.py --output_height 720 --download_dir downloaded_images --output_path output_image.png",
+    )
+
+    parser.add_argument(
+        "--output_height",
+        type=int,
+        default=720,
+        help="Output image height",
+    )
+    parser.add_argument(
+        "--download_dir",
+        type=str,
+        default="downloaded_images",
+        help="Directory to download images",
+    )
+    parser.add_argument(
+        "--output_path",
+        type=str,
+        default="output_image.png",
+        help="Output image path",
+    )
+    args = parser.parse_args()
+
     url = "https://searchplayground.google/static/tiles/vector/3"
     rows = 4
     columns = 8
-    download_dir = "downloaded_images"
-    output_path = "output_image.png"
 
-    print(f"Downloading images from {url} to {download_dir}")
+    print(f"Downloading images from {url} to {args.download_dir}")
     download_images(
         base_url=url,
         rows=rows,
         columns=columns,
-        download_dir=download_dir,
+        download_dir=args.download_dir,
     )
 
-    print(f"Stitching images into {output_path}")
+    print(f"Stitching images into {args.output_path}")
     stitch_images(
-        download_dir=download_dir,
+        download_dir=args.download_dir,
         rows=rows,
         columns=columns,
-        output_path=output_path,
+        output_path=args.output_path,
+        output_height=args.output_height,
     )
 
 
