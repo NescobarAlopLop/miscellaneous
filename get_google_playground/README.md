@@ -8,7 +8,7 @@ The script uses the `httpx` library for downloading SVG images, `cairosvg` for c
 
 Here is an example of a resulting image:
 
-![Resulting Image](get_google_playground/output_image.png)
+![Resulting Image](https://github.com/NescobarAlopLop/miscellaneous/blob/master/get_google_playground/output_image.png)
 
 Note: Replace `output_image.png` with the actual path to your output image.
 
