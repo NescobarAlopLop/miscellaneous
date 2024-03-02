@@ -90,7 +90,10 @@ def stitch_images(
     for image, row, col in images_data:
         x = col * image_width
         y = row * image_height
-        final_image.paste(image, (x, y))
+        final_image.paste(
+            im=image,
+            box=(x, y),
+        )
 
     final_image.save(output_path)
 
@@ -108,9 +111,9 @@ def svg_to_png(
             try:
                 image = convert_svg_to_png(
                     create_svg_file_path(
-                        download_dir,
-                        row,
-                        col,
+                        download_dir=download_dir,
+                        row=row,
+                        col=col,
                     ),
                 )
             except Exception as exc:
@@ -133,9 +136,9 @@ def create_future_to_image_dict(
         executor.submit(
             convert_svg_to_png,
             create_svg_file_path(
-                download_dir,
-                row,
-                col,
+                download_dir=download_dir,
+                row=row,
+                col=col,
             ),
         ): (row, col)
         for row in range(rows)
@@ -183,18 +186,18 @@ def main() -> None:
 
     print(f"Downloading images from {url} to {download_dir}")
     download_images(
-        url,
-        rows,
-        columns,
-        download_dir,
+        base_url=url,
+        rows=rows,
+        columns=columns,
+        download_dir=download_dir,
     )
 
     print(f"Stitching images into {output_path}")
     stitch_images(
-        download_dir,
-        rows,
-        columns,
-        output_path,
+        download_dir=download_dir,
+        rows=rows,
+        columns=columns,
+        output_path=output_path,
     )
 
 
