@@ -3,3 +3,4 @@ pillow
 pytest
 requests
 black
+httpx

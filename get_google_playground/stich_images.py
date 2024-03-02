@@ -3,7 +3,7 @@ import os
 from collections import namedtuple
 
 import cairosvg
-import requests
+import httpx
 from PIL import Image
 
 ImageData = namedtuple(
@@ -29,7 +29,9 @@ def download_image(
     ):
         url = f"{base_url}/{row:02d}_{col:02d}.svg"
         print(f"Downloading {url}")
-        response = requests.get(url)
+        response = httpx.get(
+            url=url,
+        )
         if response.status_code == 200:
             with open(file_path, "wb") as svg_file:
                 svg_file.write(response.content)
