@@ -21,3 +21,5 @@ pip install httpx cairosvg pillow
 ```bash
 python stitch_images.py
 ```
+
+[Link](https://campushaifaac-my.sharepoint.com/:i:/g/personal/gkesaev_campus_haifa_ac_il/EUNjTMovWyRKsxlFodw6wSABcS5XEBGGCjByEPPy7qApUw?e=dZ7dIh) to a 4k image of the puzzle.
