@@ -1,8 +1,12 @@
+import concurrent.futures
 import os
+import threading
 
 import cairosvg
 import requests
 from PIL import Image
+
+lock = threading.Lock()
 
 
 def download_images(base_url, rows, columns, download_dir):
@@ -35,7 +39,6 @@ def stitch_images(download_dir, rows, columns, output_path):
     final_height = image_height * rows
 
     final_image = Image.new("RGB", (final_width, final_height))
-
     for image, row, col in images:
         x = col * image_width
         y = row * image_height
@@ -46,19 +49,47 @@ def stitch_images(download_dir, rows, columns, output_path):
 
 def svg_to_png(columns, download_dir, rows):
     images = []
-    for row in range(rows):
-        for col in range(columns):
-            file_path = os.path.join(download_dir, f"{row:02d}_{col:02d}.svg")
-            if os.path.exists(file_path):
-                png_file_path = file_path.replace('.svg', '.png')
-                cairosvg.svg2png(url=file_path, write_to=png_file_path)
-                image = Image.open(png_file_path)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_to_image = create_future_to_image_dict(executor, rows, columns, download_dir)
+        for future in concurrent.futures.as_completed(future_to_image):
+            row, col = future_to_image[future]
+            try:
+                image = future.result()
+            except Exception as exc:
+                print(f'Generated an exception: {exc}')
+            else:
                 images.append((image, row, col))
 
     return images
 
 
-if __name__ == "__main__":
+def create_future_to_image_dict(executor, rows, columns, download_dir):
+    future_to_image = {
+        executor.submit(convert_svg_to_png, create_svg_file_path(download_dir, row, col)): (row, col)
+        for row in range(rows) for col in range(columns)
+    }
+
+    return future_to_image
+
+
+def convert_svg_to_png(file_path):
+    try:
+        if os.path.exists(file_path):
+            png_file_path = file_path.replace('.svg', '.png')
+            with lock:
+                cairosvg.svg2png(url=file_path, write_to=png_file_path)
+            image = Image.open(png_file_path)
+
+            return image
+    except Exception as e:
+        print(f"An error occurred while converting {file_path} to PNG: {e}")
+
+
+def create_svg_file_path(download_dir, row, col):
+    return os.path.join(download_dir, f"{row:02d}_{col:02d}.svg")
+
+
+def main():
     url = "https://searchplayground.google/static/tiles/vector/3"
     rows = 4
     columns = 8
@@ -67,3 +98,7 @@ if __name__ == "__main__":
 
     download_images(url, rows, columns, download_dir)
     stitch_images(download_dir, rows, columns, output_path)
+
+
+if __name__ == "__main__":
+    main()
