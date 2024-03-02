@@ -69,6 +69,8 @@ def stitch_images(
     rows: int,
     columns: int,
     output_path: str,
+    output_height: int = 720,
+    compress_level: int = 3,
 ) -> None:
     images_data = svg_to_png(
         download_dir=download_dir,
@@ -86,8 +88,8 @@ def stitch_images(
     final_height = image_height * rows
 
     final_image = Image.new(
-        "RGB",
-        (final_width, final_height),
+        mode="RGB",
+        size=(final_width, final_height),
     )
     for image, row, col in images_data:
         x = col * image_width
@@ -97,7 +99,16 @@ def stitch_images(
             box=(x, y),
         )
 
-    final_image.save(output_path)
+    aspect_ratio = final_width / final_height
+    output_width = int(output_height * aspect_ratio)
+    final_image = final_image.resize(
+        size=(output_width, output_height),
+    )
+
+    final_image.save(
+        fp=output_path,
+        compress_level=compress_level,
+    )
 
 
 def svg_to_png(
