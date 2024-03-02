@@ -13,19 +13,19 @@ ImageData = namedtuple(
 
 
 def download_image(
-    base_url,
-    row,
-    col,
-    download_dir,
-):
+    base_url: str,
+    row: int,
+    col: int,
+    download_dir: str,
+) -> None:
     file_path = create_svg_file_path(
-        download_dir,
-        row,
-        col,
+        download_dir=download_dir,
+        row=row,
+        col=col,
     )
 
     if not os.path.exists(
-        file_path,
+        path=file_path,
     ):
         url = f"{base_url}/{row:02d}_{col:02d}.svg"
         print(f"Downloading {url}")
@@ -38,15 +38,17 @@ def download_image(
 
 
 def download_images(
-    base_url,
-    rows,
-    columns,
-    download_dir,
-):
+    base_url: str,
+    rows: int,
+    columns: int,
+    download_dir: str,
+) -> None:
     if not os.path.exists(
-        download_dir,
+        path=download_dir,
     ):
-        os.makedirs(download_dir)
+        os.makedirs(
+            name=download_dir,
+        )
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         for row in range(rows):
@@ -61,12 +63,16 @@ def download_images(
 
 
 def stitch_images(
-    download_dir,
-    rows,
-    columns,
-    output_path,
-):
-    images_data = svg_to_png(columns, download_dir, rows)
+    download_dir: str,
+    rows: int,
+    columns: int,
+    output_path: str,
+) -> None:
+    images_data = svg_to_png(
+        download_dir=download_dir,
+        columns=columns,
+        rows=rows,
+    )
 
     images_data.sort(
         key=lambda image_data: (image_data.row, image_data.col),
@@ -90,9 +96,9 @@ def stitch_images(
 
 
 def svg_to_png(
-    columns,
-    download_dir,
-    rows,
+    download_dir: str,
+    columns: int,
+    rows: int,
 ) -> list[ImageData]:
     images: list[ImageData] = []
 
@@ -118,11 +124,11 @@ def svg_to_png(
 
 
 def create_future_to_image_dict(
-    executor,
-    rows,
-    columns,
-    download_dir,
-):
+    executor: concurrent.futures.ThreadPoolExecutor,
+    rows: int,
+    columns: int,
+    download_dir: str,
+) -> dict[concurrent.futures.Future, tuple[int, int]]:
     future_to_image = {
         executor.submit(
             convert_svg_to_png,
@@ -140,8 +146,8 @@ def create_future_to_image_dict(
 
 
 def convert_svg_to_png(
-    file_path,
-):
+    file_path: str,
+) -> Image.Image:
     try:
         if os.path.exists(
             file_path,
@@ -161,14 +167,14 @@ def convert_svg_to_png(
 
 
 def create_svg_file_path(
-    download_dir,
-    row,
-    col,
-):
+    download_dir: str,
+    row: int,
+    col: int,
+) -> str:
     return os.path.join(download_dir, f"{row:02d}_{col:02d}.svg")
 
 
-def main():
+def main() -> None:
     url = "https://searchplayground.google/static/tiles/vector/3"
     rows = 4
     columns = 8
