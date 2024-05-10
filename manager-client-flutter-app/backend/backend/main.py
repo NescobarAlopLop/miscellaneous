@@ -1,9 +1,24 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
+from pydantic import BaseModel
+
+
+class Message(BaseModel):
+    message: str
+
 
 app = FastAPI()
 
-# This will keep track of all active WebSocket connections
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 connections: List[WebSocket] = []
 
 
@@ -22,11 +37,10 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 @app.post("/send/")
-async def send_message(message: str):
-    # This endpoint receives messages from the master app and broadcasts them to all connected clients
+async def send_message(message: Message):
     for connection in connections:
-        await connection.send_text(message)
-    return {"message": "Message sent to all clients", "data": message}
+        await connection.send_text(message.message)
+    return {"message": "Message sent to all clients", "data": message.message}
 
 
 @app.get("/")
