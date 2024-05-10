@@ -7,7 +7,10 @@ import (
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello, you've requested: %s\n", r.URL.Path)
+	_, err := fmt.Fprintf(w, "Hello, you've requested: %s\n", r.URL.Path)
+	if err != nil {
+		return
+	}
 }
 
 func main() {
