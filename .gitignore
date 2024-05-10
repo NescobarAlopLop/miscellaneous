@@ -109,8 +109,7 @@ venv.bak/
 
 
 # my
-.vscode
-
-.idea/*
+**/**/.vscode
+**/**/.idea
 /go_docker_talk/rootfs/
 /mini_programs/run_java_test/test_files/
