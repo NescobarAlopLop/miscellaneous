@@ -15,6 +15,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   web_socket_channel: ^3.0.0
+  http: any
 
   flutter_gen: ^5.4.0
 dev_dependencies:
