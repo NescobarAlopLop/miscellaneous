@@ -15,7 +15,9 @@ GRAY = (169, 169, 169)
 
 black_hole_pos = (WIDTH // 6, HEIGHT // 2)
 black_hole_mass = 10**8
-G = 6.67430e-11 * 1000 # Gravitational constant increased
+G = 6.67430e-11 * 1000  # Gravitational constant increased
+zoom_level = 1.0
+zoom_increment = 0.1
 
 
 class Particle:
@@ -43,8 +45,10 @@ class Particle:
             self.vx = self.vy = 0
             self.x, self.y = black_hole_pos
 
-    def draw(self):
-        pygame.draw.circle(screen, WHITE, (int(self.x), int(self.y)), 2)
+    def draw(self, surface, zoom_level):
+        scaled_x = black_hole_pos[0] + (self.x - black_hole_pos[0]) * zoom_level
+        scaled_y = black_hole_pos[1] + (self.y - black_hole_pos[1]) * zoom_level
+        pygame.draw.circle(surface, WHITE, (int(scaled_x), int(scaled_y)), int(2 * zoom_level))
 
 
 def generate_particles(num_particles):
@@ -100,6 +104,17 @@ def restart():
     particles = generate_particles(3000)
 
 
+def handle_zoom(event):
+    global zoom_level
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.button == 4:  # Scroll up
+            zoom_level += zoom_increment
+        elif event.button == 5:  # Scroll down
+            zoom_level -= zoom_increment
+            if zoom_level < 0.1:
+                zoom_level = 0.1
+
+
 play_pause_button = Button("Pause", 50, 550, 100, 40, GRAY, YELLOW, toggle_play_pause)
 restart_button = Button("Restart", 200, 550, 100, 40, GRAY, YELLOW, restart)
 
@@ -112,19 +127,24 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        handle_zoom(event)
         for button in buttons:
             if button.is_clicked(event):
                 button.action()
 
     screen.fill(BLACK)
 
-    pygame.draw.circle(screen, YELLOW, black_hole_pos, 20)
+    scaled_black_hole_pos = (
+        int(black_hole_pos[0] * zoom_level),
+        int(black_hole_pos[1] * zoom_level)
+    )
+    pygame.draw.circle(screen, YELLOW, scaled_black_hole_pos, int(20 * zoom_level))
 
     if not paused:
         for particle in particles:
             particle.update()
     for particle in particles:
-        particle.draw()
+        particle.draw(screen, zoom_level)
 
     for button in buttons:
         button.draw(screen)
