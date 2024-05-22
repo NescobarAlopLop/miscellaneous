@@ -4,32 +4,40 @@ import math
 
 pygame.init()
 
-WIDTH, HEIGHT = 800, 600
+
+WIDTH, HEIGHT = 1200, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Black Hole Simulation")
+pygame.display.set_caption("Massive Black Hole Simulation")
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 YELLOW = (255, 255, 0)
+ORANGE = (255, 140, 0)
+RED = (255, 0, 0)
 GRAY = (169, 169, 169)
+BLUE = (0, 0, 255)
 
-black_hole_pos = (WIDTH // 2, HEIGHT // 2)
-black_hole_mass = 10 ** 6  # Arbitrary mass for gravitational pull
+
+black_hole_pos = (WIDTH // 6, HEIGHT // 2)
+black_hole_mass = 10**8  # Increased mass for stronger gravitational pull
 G = 6.67430e-11  # Gravitational constant
 
 
 class Particle:
-    def __init__(self, x, y):
+    def __init__(self, x, y, mass, color):
         self.x = x
         self.y = y
-        self.vx = random.uniform(-2, 2)
-        self.vy = random.uniform(-2, 2)
-        self.mass = 1  # Arbitrary mass
+        self.vx = random.uniform(-1, 1)
+        self.vy = random.uniform(-1, 1)
+        self.mass = mass
+        self.color = color
 
     def update(self):
         dx = black_hole_pos[0] - self.x
         dy = black_hole_pos[1] - self.y
         dist = math.sqrt(dx**2 + dy**2)
+        if dist < 5:  # Avoid particles getting stuck in the center
+            dist = 5
         force = G * self.mass * black_hole_mass / (dist**2 if dist > 1 else 1)
 
         force_x = force * (dx / dist)
@@ -42,12 +50,28 @@ class Particle:
         self.y += self.vy
 
     def draw(self):
-        pygame.draw.circle(screen, WHITE, (int(self.x), int(self.y)), 2)
+        pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), 2)
 
 
-particles = [
-    Particle(random.randint(0, WIDTH), random.randint(0, HEIGHT)) for _ in range(100)
-]
+def generate_particles(num_particles):
+    particles = []
+    center_x, center_y = WIDTH * 4 // 5, HEIGHT // 2
+    for _ in range(num_particles):
+        angle = random.uniform(0, 2 * math.pi)
+        radius = random.uniform(0, 200)
+        x = center_x + radius * math.cos(angle)
+        y = center_y + radius * math.sin(angle)
+        mass = random.uniform(1, 10)
+        color = (
+            random.randint(100, 255),
+            random.randint(0, 150),
+            random.randint(0, 150),
+        )
+        particles.append(Particle(x, y, mass, color))
+    return particles
+
+
+particles = generate_particles(3000)
 
 
 class Button:
@@ -88,10 +112,7 @@ def pause():
 
 def restart():
     global particles
-    particles = [
-        Particle(random.randint(0, WIDTH), random.randint(0, HEIGHT))
-        for _ in range(100)
-    ]
+    particles = generate_particles(3000)
 
 
 play_button = Button("Play", 50, 550, 100, 40, GRAY, YELLOW, play)
@@ -112,12 +133,13 @@ while running:
 
     screen.fill(BLACK)
 
-    pygame.draw.circle(screen, YELLOW, black_hole_pos, 10)
+    pygame.draw.circle(screen, YELLOW, black_hole_pos, 20)
 
     if not paused:
         for particle in particles:
             particle.update()
-            particle.draw()
+    for particle in particles:
+        particle.draw()
 
     for button in buttons:
         button.draw(screen)
